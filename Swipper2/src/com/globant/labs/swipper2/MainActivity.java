@@ -398,4 +398,9 @@ public class MainActivity extends ActionBarActivity implements
 		mMapFragment.onDrawerClosed();
 	}
 
+	@Override
+	public void onDrawerSlide(float slideOffset) {
+		mMapFragment.onDrawerSlide(slideOffset);
+	}
+
 }

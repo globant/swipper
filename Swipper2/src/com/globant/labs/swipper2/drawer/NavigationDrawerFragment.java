@@ -200,6 +200,12 @@ public class NavigationDrawerFragment extends Fragment {
 																// onPrepareOptionsMenu()
 				mListener.onDrawerOpened();
 			}
+			
+			@Override
+			public void onDrawerSlide(View drawerView, float slideOffset) {
+				mListener.onDrawerSlide(slideOffset);
+				super.onDrawerSlide(drawerView, slideOffset);
+			}
 		};
 
 		// If the user hasn't 'learned' about the drawer, open it to introduce
@@ -327,5 +333,6 @@ public class NavigationDrawerFragment extends Fragment {
 	public static interface NavigationDrawerToggleListener {
 		void onDrawerOpened();
 		void onDrawerClosed();
+		void onDrawerSlide(float slideOffset);
 	}
 }

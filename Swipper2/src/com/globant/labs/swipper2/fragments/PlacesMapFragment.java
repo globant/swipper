@@ -301,21 +301,30 @@ public class PlacesMapFragment extends SupportMapFragment {
 	public void error() {
 		setStatusText("Can't load places, try again later");
 	}
-	
+
 	public void onDrawerOpened() {
 		// we'll publish this method as a util when other commits are merged
 		int padding_in_dp = Math.round(getActivity().getResources().getDimension(
 				R.dimen.navigation_drawer_width));
-	    final float scale = getResources().getDisplayMetrics().density;
-	    int paddingLeft = (int) (padding_in_dp * scale + 0.5f);
+		final float scale = getResources().getDisplayMetrics().density;
+		int paddingLeft = (int) (padding_in_dp * scale + 0.5f);
 		mMap.getUiSettings().setMyLocationButtonEnabled(false);
 		mMap.getUiSettings().setZoomControlsEnabled(false);
 		mMap.setPadding(paddingLeft, 0, 0, 0);
 	}
-	
+
 	public void onDrawerClosed() {
 		mMap.getUiSettings().setMyLocationButtonEnabled(true);
 		mMap.getUiSettings().setZoomControlsEnabled(true);
 		mMap.setPadding(0, 0, 0, 0);
+	}
+
+	public void onDrawerSlide(float slideOffset) {
+		// we'll publish this method as a util when other commits are merged
+		int padding_in_dp = Math.round(getActivity().getResources().getDimension(
+				R.dimen.navigation_drawer_width) * slideOffset);
+		final float scale = getResources().getDisplayMetrics().density;
+		int paddingLeft = (int) (padding_in_dp * scale + 0.5f);
+		mMap.setPadding(paddingLeft, 0, 0, 0);
 	}
 }
