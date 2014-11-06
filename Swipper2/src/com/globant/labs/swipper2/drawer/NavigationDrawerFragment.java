@@ -43,6 +43,7 @@ public class NavigationDrawerFragment extends Fragment {
 	 * A pointer to the current callbacks instance (the Activity).
 	 */
 	private NavigationDrawerCallbacks mCallbacks;
+	private NavigationDrawerToggleListener mListener;
 
 	/**
 	 * Helper component that ties the action bar to the navigation drawer.
@@ -175,6 +176,7 @@ public class NavigationDrawerFragment extends Fragment {
 																// onPrepareOptionsMenu()
 				
 				mAdapter.resetChanges();
+				mListener.onDrawerClosed();
 			}
 
 			@Override
@@ -196,6 +198,7 @@ public class NavigationDrawerFragment extends Fragment {
 
 				getActivity().supportInvalidateOptionsMenu(); // calls
 																// onPrepareOptionsMenu()
+				mListener.onDrawerOpened();
 			}
 		};
 
@@ -232,12 +235,18 @@ public class NavigationDrawerFragment extends Fragment {
 		} catch (ClassCastException e) {
 			throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
 		}
+		try {
+			mListener = (NavigationDrawerToggleListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException("Activity must implement NavigationDrawerToggleListener.");
+		}
 	}
 
 	@Override
 	public void onDetach() {
 		super.onDetach();
 		mCallbacks = null;
+		mListener = null;
 	}
 
 	@Override
@@ -313,5 +322,10 @@ public class NavigationDrawerFragment extends Fragment {
 		 * Called when an item in the navigation drawer is selected.
 		 */
 		void onSelectionApplied(List<String> ids);
+	}
+	
+	public static interface NavigationDrawerToggleListener {
+		void onDrawerOpened();
+		void onDrawerClosed();
 	}
 }

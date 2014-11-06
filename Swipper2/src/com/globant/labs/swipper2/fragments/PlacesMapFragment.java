@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Map.Entry;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -53,50 +53,50 @@ public class PlacesMapFragment extends SupportMapFragment {
 	protected GoogleMap mMap;
 	protected Activity mActivity;
 	protected PlacesProvider mPlacesProvider;
-	
+
 	protected boolean mFarZoom;
 	protected LatLng mLastNorthWest;
 	protected LatLng mLastSouthEast;
-	
+
 	protected Location mCurrentLocation;
-	
+
 	protected Map<String, Marker> mMarkers;
 	protected Map<String, Place> mIdsMap;
-	
+
 	protected TextView mStatusTextView;
 	protected String mStatusText;
-	
+
 	protected String mStatusLoadingString;
 	protected String mStatusDoneString;
 	protected String mStatusNoPlacesString;
 	protected String mStatusZoomInString;
-	
+
 	protected Timer mMapsWaiter;
-	
+
 	public PlacesMapFragment() {
 		super();
 	}
-	
+
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        mMarkers = new HashMap<String, Marker>();
-        mIdsMap = new HashMap<String, Place>();
-        mStatusText = "";
-        
-        Resources resources = getResources();
-        mStatusLoadingString = resources.getString(R.string.status_loading);
-        mStatusDoneString = resources.getString(R.string.status_done);
-        mStatusNoPlacesString = resources.getString(R.string.status_no_places);
-        mStatusZoomInString = resources.getString(R.string.status_zoom_in);
-    }
-	
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+		mMarkers = new HashMap<String, Marker>();
+		mIdsMap = new HashMap<String, Place>();
+		mStatusText = "";
+
+		Resources resources = getResources();
+		mStatusLoadingString = resources.getString(R.string.status_loading);
+		mStatusDoneString = resources.getString(R.string.status_done);
+		mStatusNoPlacesString = resources.getString(R.string.status_no_places);
+		mStatusZoomInString = resources.getString(R.string.status_zoom_in);
+	}
+
 	@Override
 	public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mActivity = activity;  
-        
+		super.onAttach(activity);
+		mActivity = activity;
+
 		mMapsWaiter = new Timer();
 		mMapsWaiter.schedule(new TimerTask() {
 			@Override
@@ -105,165 +105,171 @@ public class PlacesMapFragment extends SupportMapFragment {
 				((MainActivity) mActivity).networkErrorOnUiThread();
 			}
 		}, 20000);
-    }
-	
+	}
+
 	@Override
 	@SuppressLint("InflateParams")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.status_bar, null);
-		
-		FrameLayout mapFrame = (FrameLayout) super.onCreateView(inflater, container, savedInstanceState);
-		
+
+		FrameLayout mapFrame = (FrameLayout) super.onCreateView(inflater, container,
+				savedInstanceState);
+
 		view.addView(mapFrame);
 		LayoutParams layoutParams = new LayoutParams(mapFrame.getLayoutParams());
 		layoutParams.addRule(RelativeLayout.ABOVE, R.id.statusText);
 		mapFrame.setLayoutParams(layoutParams);
-				
+
 		mMap = getMap();
 		mMap.setMyLocationEnabled(true);
-		
+
 		mStatusTextView = (TextView) view.findViewById(R.id.statusText);
 		mStatusTextView.setText(mStatusText);
-		
+
 		return view;
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
+
 		mPlacesProvider = ((MainActivity) getActivity()).getPlacesProvider();
-		
+
 		mMap.setInfoWindowAdapter(new SwipperInfoWindowAdapter(mActivity));
-		
+
 		mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
-			
+
 			@Override
 			public void onCameraChange(CameraPosition camPosition) {
 				mMapsWaiter.cancel();
-				if(camPosition.zoom > 10) {
-					
+				if (camPosition.zoom > 10) {
+
 					setStatusText(mStatusLoadingString);
-					
+
 					LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-				
-					if(mPlacesProvider.updateLocation(bounds)) {	
+
+					if (mPlacesProvider.updateLocation(bounds)) {
 						displayPlaces(mPlacesProvider.getFilteredPlaces(), mCurrentLocation);
 					}
-					
+
 					mFarZoom = false;
-					
-				}else{
+
+				} else {
 					setStatusText(mStatusZoomInString);
 					mFarZoom = true;
 					clear();
 				}
 			}
 		});
-		
-		mMap.setOnMyLocationChangeListener(new OnMyLocationChangeListener() {		
+
+		mMap.setOnMyLocationChangeListener(new OnMyLocationChangeListener() {
 			@Override
 			public void onMyLocationChange(Location myLocation) {
-				mPlacesProvider.setCurrentLocation(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()));
+				mPlacesProvider.setCurrentLocation(new LatLng(myLocation.getLatitude(), myLocation
+						.getLongitude()));
 			}
 		});
-		
+
 		mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 			@Override
 			public void onInfoWindowClick(Marker marker) {
 				Place p = mIdsMap.get(marker.getId());
-				
+
 				Intent intent = new Intent(getActivity(), PlaceDetailActivity.class);
 				intent.putExtra(PlaceDetailActivity.PLACE_ID_EXTRA, p.getId());
 				intent.putExtra(PlaceDetailActivity.PLACE_NAME_EXTRA, p.getName());
 				intent.putExtra(PlaceDetailActivity.PLACE_CATEGORY_EXTRA, p.getCategory());
-				intent.putExtra(PlaceDetailActivity.PLACE_DISTANCE_EXTRA, mPlacesProvider.getDistanceTo(p));
+				intent.putExtra(PlaceDetailActivity.PLACE_DISTANCE_EXTRA,
+						mPlacesProvider.getDistanceTo(p));
 				startActivity(intent);
 			}
 		});
-		
-		if(mCurrentLocation != null) {
+
+		if (mCurrentLocation != null) {
 			displayCurrentLocation();
 		}
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-	    inflater.inflate(R.menu.map, menu);
-	    super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.map, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
-	
+
 	public void setCurrentLocation(Location location) {
-		mCurrentLocation = location;		
+		mCurrentLocation = location;
 	}
-	
+
 	public void displayLocation(Location location) {
-		if(mMap != null) {
+		if (mMap != null) {
 			double latitude = location.getLatitude();
 			double longitude = location.getLongitude();
-	
+
 			LatLng latLng = new LatLng(latitude, longitude);
-	
-			//mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-			//mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+
+			// mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+			// mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 		}
 	}
-	
+
 	public void displayCurrentLocation() {
 		displayLocation(mCurrentLocation);
 	}
-	
+
 	public void clear() {
-		if(mMap != null) {
+		if (mMap != null) {
 			mMap.clear();
 			mMarkers.clear();
 			mIdsMap.clear();
 		}
 	}
-	
+
 	public void displayPlaces(List<Place> places, Location currentLocation) {
 		LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 		List<String> keeps = new ArrayList<String>();
-		
+
 		LatLng myLocation = null;
-		if(currentLocation != null) {
+		if (currentLocation != null) {
 			myLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
 		}
-		
-		DecimalFormat df = new DecimalFormat("0.00"); 
-		for(Place p: places) {
-			if(!mMarkers.containsKey(p.getId())) {			
+
+		DecimalFormat df = new DecimalFormat("0.00");
+		for (Place p : places) {
+			if (!mMarkers.containsKey(p.getId())) {
 				MarkerOptions marker = new MarkerOptions()
-					.position(p.getLocation())
-					.title(p.getName())
-					.snippet(df.format(GeoUtils.getDistance(p.getLocation(), myLocation))+" km")
-					.anchor(0.35f, 1.0f)
-					.infoWindowAnchor(0.35f, 0.2f)
-					.icon(BitmapDescriptorFactory.fromResource(CategoryMapper.getCategoryMarker(p.getCategory())));
-					
+						.position(p.getLocation())
+						.title(p.getName())
+						.snippet(
+								df.format(GeoUtils.getDistance(p.getLocation(), myLocation))
+										+ " km")
+						.anchor(0.35f, 1.0f)
+						.infoWindowAnchor(0.35f, 0.2f)
+						.icon(BitmapDescriptorFactory.fromResource(CategoryMapper
+								.getCategoryMarker(p.getCategory())));
+
 				Marker m = mMap.addMarker(marker);
 				mMarkers.put(p.getId(), m);
 				mIdsMap.put(m.getId(), p);
 			}
-			
+
 			keeps.add(p.getId());
 		}
-		
+
 		Iterator<Entry<String, Marker>> it = mMarkers.entrySet().iterator();
-		
+
 		while (it.hasNext()) {
 			Entry<String, Marker> entry = it.next();
-			if(!bounds.contains(entry.getValue().getPosition()) || !keeps.contains(entry.getKey())) {
+			if (!bounds.contains(entry.getValue().getPosition()) || !keeps.contains(entry.getKey())) {
 				mIdsMap.remove(entry.getValue().getId());
 				entry.getValue().remove();
 				it.remove();
 			}
 		}
-		
-		if(mMarkers.size() == 0) {
+
+		if (mMarkers.size() == 0) {
 			setStatusText(mStatusNoPlacesString);
-		}else{
+		} else {
 			setStatusText(mStatusDoneString);
 		}
 
@@ -271,28 +277,45 @@ public class PlacesMapFragment extends SupportMapFragment {
 
 	protected void setStatusText(String text) {
 		mStatusText = text;
-		if(mStatusTextView != null) {
+		if (mStatusTextView != null) {
 			mStatusTextView.setText(mStatusText);
 		}
 	}
-		
+
 	@Override
 	public void onDestroyView() {
 		mMap = null;
 		super.onDestroyView();
 	}
-	
+
 	@Override
 	public void onDetach() {
 		mActivity = null;
 		super.onDetach();
 	}
-	
+
 	public void retrying() {
 		setStatusText(getResources().getString(R.string.status_retry));
 	}
-	
+
 	public void error() {
 		setStatusText("Can't load places, try again later");
+	}
+	
+	public void onDrawerOpened() {
+		// we'll publish this method as a util when other commits are merged
+		int padding_in_dp = Math.round(getActivity().getResources().getDimension(
+				R.dimen.navigation_drawer_width));
+	    final float scale = getResources().getDisplayMetrics().density;
+	    int paddingLeft = (int) (padding_in_dp * scale + 0.5f);
+		mMap.getUiSettings().setMyLocationButtonEnabled(false);
+		mMap.getUiSettings().setZoomControlsEnabled(false);
+		mMap.setPadding(paddingLeft, 0, 0, 0);
+	}
+	
+	public void onDrawerClosed() {
+		mMap.getUiSettings().setMyLocationButtonEnabled(true);
+		mMap.getUiSettings().setZoomControlsEnabled(true);
+		mMap.setPadding(0, 0, 0, 0);
 	}
 }
