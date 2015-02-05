@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.view.MotionEvent;
 
+import com.flurry.android.FlurryAgent;
 import com.globant.labs.swipper2.fragments.ImagePagerFragment;
 import com.globant.labs.swipper2.models.Place;
 
@@ -43,7 +44,19 @@ public class GalleryActivity extends FragmentActivity {
 		}
 	}
 
-	@Override
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(this);
+    }
+
+    @Override
+    protected void onStop() {
+        FlurryAgent.onEndSession(this);
+        super.onStop();
+    }
+
+    @Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		if (mFragment != null) {
 			((ImagePagerFragment) mFragment).onScreenTouched();

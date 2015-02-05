@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 
+import com.flurry.android.FlurryAgent;
 import com.globant.labs.swipper2.api.SwipperRestAdapter;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -12,6 +13,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 public class SwipperApp extends Application {
+
+    private static final String FLURRY_APIKEY = "9SMPNPVHFWGDQTKJ94RS";
 
     SwipperRestAdapter adapter;
 
@@ -23,8 +26,7 @@ public class SwipperApp extends Application {
         return adapter;
     }
     
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-	@Override
+    @Override
 	public void onCreate() {
 		// if (Constants.Config.DEVELOPER_MODE && Build.VERSION.SDK_INT >=
 		// Build.VERSION_CODES.GINGERBREAD) {
@@ -37,6 +39,12 @@ public class SwipperApp extends Application {
 		super.onCreate();
 
 		initImageLoader(getApplicationContext());
+
+        // configure Flurry
+        FlurryAgent.setLogEnabled(true);
+
+        // init Flurry
+        FlurryAgent.init(this, FLURRY_APIKEY);
 	}
 
 	public static void initImageLoader(Context context) {

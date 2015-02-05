@@ -86,6 +86,7 @@
     <orderEntry type="library" exported="" name="appcompat-v7-19.0.0" level="project" />
     <orderEntry type="library" exported="" name="evo-inflector-1.2" level="project" />
     <orderEntry type="library" exported="" name="guava-17.0" level="project" />
+    <orderEntry type="library" exported="" name="FlurryAnalytics-5.1.0" level="project" />
     <orderEntry type="library" exported="" name="loopback-sdk-android-1.5.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-6.1.11" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-20.0.0" level="project" />
