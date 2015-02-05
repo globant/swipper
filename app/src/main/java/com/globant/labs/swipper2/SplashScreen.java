@@ -15,6 +15,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import com.flurry.android.FlurryAgent;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -67,6 +68,7 @@ public class SplashScreen extends FragmentActivity implements GoogleApiClient.Co
 	@Override
 	protected void onStart() {
 		super.onStart();
+        FlurryAgent.onStartSession(this);
 		if (!isConnected()) { // we do not have inet...
 			displayUnrecoverableErrorMessage(R.string.network_error);
 		} else if (!mResolvingError) { // we do have inet. let's connect to the api (unless we're already doing it)
@@ -77,6 +79,7 @@ public class SplashScreen extends FragmentActivity implements GoogleApiClient.Co
 	@Override
 	protected void onStop() {
 		mGoogleApiClient.disconnect();
+        FlurryAgent.onEndSession(this);
 		super.onStop();
 	}
 
@@ -108,6 +111,11 @@ public class SplashScreen extends FragmentActivity implements GoogleApiClient.Co
 		// Connected to Google Play services!
 		// The good stuff goes here.
 		mLastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastKnownLocation != null) {
+            FlurryAgent.setLocation(
+                    (float) mLastKnownLocation.getLatitude(),
+                    (float) mLastKnownLocation.getLongitude());
+        }
 		stepAndTransition();
 	}
 

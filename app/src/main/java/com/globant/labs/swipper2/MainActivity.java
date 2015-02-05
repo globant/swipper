@@ -32,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.flurry.android.FlurryAgent;
 import com.globant.labs.swipper2.drawer.CategoriesAdapter;
 import com.globant.labs.swipper2.drawer.CategoryMapper;
 import com.globant.labs.swipper2.drawer.DrawerCategoryItem;
@@ -232,7 +233,13 @@ public class MainActivity extends ActionBarActivity implements
 		mNavigationDrawerFragment.getView().getViewTreeObserver().addOnGlobalLayoutListener(this);
 	}
 
-	@Override
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(this);
+    }
+
+    @Override
 	protected void onRestoreInstanceState(final Bundle savedInstanceState) {
 		Log.i("MainActivity", "onRestoreInstanceState");
 		mRestoreLater = savedInstanceState.getBundle(SAVED_RESTORE_LATER);
@@ -264,7 +271,13 @@ public class MainActivity extends ActionBarActivity implements
 		 */
 	}
 
-	public PlacesProvider getPlacesProvider() {
+    @Override
+    protected void onStop() {
+        FlurryAgent.onEndSession(this);
+        super.onStop();
+    }
+
+    public PlacesProvider getPlacesProvider() {
 		return mPlacesProvider;
 	}
 

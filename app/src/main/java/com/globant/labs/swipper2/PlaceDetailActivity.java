@@ -39,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flurry.android.FlurryAgent;
 import com.globant.labs.swipper2.drawer.CategoryMapper;
 import com.globant.labs.swipper2.models.GoogleReview;
 import com.globant.labs.swipper2.models.Photo;
@@ -162,18 +163,31 @@ public class PlaceDetailActivity extends ActionBarActivity implements ObjectCall
 
 	}
 
-	private void requestDetails() {
-		RestAdapter restAdapter = ((SwipperApp) getApplication()).getRestAdapter();
-		PlaceDetailsRepository placeDetailsRepo = restAdapter
-				.createRepository(PlaceDetailsRepository.class);
-		placeDetailsRepo.details(mPlaceId, this);
-	}
-
 	@Override
 	protected void onStart() {
 		mLargeImageSize = getLargeImageSize();
+        FlurryAgent.onStartSession(this);
 		super.onStart();
 	}
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        changeSizeTitle();
+    }
+
+    @Override
+    protected void onStop() {
+        FlurryAgent.onEndSession(this);
+        super.onStop();
+    }
+
+    private void requestDetails() {
+        RestAdapter restAdapter = ((SwipperApp) getApplication()).getRestAdapter();
+        PlaceDetailsRepository placeDetailsRepo = restAdapter
+                .createRepository(PlaceDetailsRepository.class);
+        placeDetailsRepo.details(mPlaceId, this);
+    }
 
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
@@ -203,12 +217,6 @@ public class PlaceDetailActivity extends ActionBarActivity implements ObjectCall
 		itemIcon.setIcon(mCategoryMarkerId);
 		itemIcon.setEnabled(false);
 		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		changeSizeTitle();
 	}
 
 	private void changeSizeTitle() {
