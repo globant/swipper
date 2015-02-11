@@ -5,7 +5,40 @@
 
 {% block content %}
 
-Pais: {{ country }}
+<p>Pais: {{ country }}</p>
+
+<p>Data:</p>
+
+
+<table class="table table-striped">
+<thead>
+        <tr>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Phone</th>
+          <th>Location</th>
+          <th>Category</th>
+          <th>City</th>
+        </tr>
+</thead>
+<tbody>
+      
+
+{% for item in data %}
+
+		<tr>
+          <th scope="row">{{ item.Name }}</th>
+          <td>{{ item.Address }}</td>
+          <td>{{ item.Phone }}</td>
+          <td>{{ item.Location }}</td>
+			<td>{{ item.Category }}</td>
+			<td>{{ item.City }}</td>
+        </tr>
+
+
+{% endfor %}
+</tbody>
+</table>
 
 {% endblock %}
 

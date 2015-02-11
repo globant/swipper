@@ -96,4 +96,6 @@ TEMPLATE_DIRS = (
 
 )
 
+## NOTE: For security reasons, this setting is in a local file.
+# API_BASE_URL = 'XXX/api/'
 
