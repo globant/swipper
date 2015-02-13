@@ -183,27 +183,27 @@ public class MainActivity extends ActionBarActivity implements
 				onLocationChanged(mCurrentLocation);
 			}
 
-			mPlacesProvider.setPlacesCallback(new PlacesCallback() {
+			mPlacesProvider.setPlacesWithinBoundsCallback(new PlacesCallback() {
 
-				@Override
-				public void placesUpdated(List<Place> places) {
-					((PlacesAdapter) mListFragment.getListAdapter()).setDataChanged();
-					mMapFragment.displayPlaces(places, mCurrentLocation);
-				}
+                @Override
+                public void placesUpdated(List<Place> places) {
+                    ((PlacesAdapter) mListFragment.getListAdapter()).setDataChanged();
+                    mMapFragment.displayPlaces(places, mCurrentLocation);
+                }
 
-				@Override
-				public void placesRetry(Throwable t) {
-					mMapFragment.retrying();
-				}
+                @Override
+                public void placesRetry(Throwable t) {
+                    mMapFragment.retrying();
+                }
 
-				@Override
-				public void placesError(Throwable t) {
-					Log.i("SWIPPER", "places errorr");
-					networkError();
-					t.printStackTrace();
-				}
+                @Override
+                public void placesError(Throwable t) {
+                    Log.i("SWIPPER", "places error");
+                    networkError();
+                    t.printStackTrace();
+                }
 
-			});
+            });
 			mViewPager.setCurrentItem(MainFragmentsAdapter.MAP_FRAGMENT);
 
 			// showCoachMarks();

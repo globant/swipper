@@ -79,22 +79,21 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
-      <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android 4.4.2 Google APIs" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="appcompat-v7-19.0.0" level="project" />
-    <orderEntry type="library" exported="" name="evo-inflector-1.2" level="project" />
-    <orderEntry type="library" exported="" name="guava-17.0" level="project" />
-    <orderEntry type="library" exported="" name="FlurryAnalytics-5.1.0" level="project" />
-    <orderEntry type="library" exported="" name="loopback-sdk-android-1.5.1" level="project" />
-    <orderEntry type="library" exported="" name="play-services-6.1.11" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-20.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-20.0.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-6.1.11" level="project" />
+    <orderEntry type="library" exported="" name="FlurryAnalytics-5.1.0" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="gridlayout-v7-19.0.0" level="project" />
-    <orderEntry type="library" exported="" name="universal-image-loader-1.9.3" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
+    <orderEntry type="library" exported="" name="loopback-sdk-android-1.5.1" level="project" />
+    <orderEntry type="library" exported="" name="universal-image-loader-1.9.3" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-19.0.0" level="project" />
+    <orderEntry type="library" exported="" name="guava-17.0" level="project" />
+    <orderEntry type="library" exported="" name="evo-inflector-1.2" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-20.0.0" level="project" />
   </component>
 </module>
 

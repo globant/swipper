@@ -156,7 +156,7 @@ public class PlacesMapFragment extends SupportMapFragment {
 
 					LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 
-					if (mPlacesProvider.updateLocation(bounds)) {
+					if (mPlacesProvider.updateBounds(bounds)) {
 						displayPlaces(mPlacesProvider.getFilteredPlaces(), mCurrentLocation);
 					}
 

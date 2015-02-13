@@ -31,6 +31,19 @@ public class PlaceRepository extends ModelRepository<Place> {
                 
     }
 
+    public void storedBy(LatLng here, int page, ListCallback<Place> callback) {
+        final Map<String, String> parameters = ImmutableMap.of(
+                "here", GeoUtils.latLngToJson(here).toString(),
+                "page", String.valueOf(page)
+        );
+
+        invokeStaticMethod(
+                "storedBy",
+                parameters,
+                new JsonArrayParser<Place>(this, callback)
+        );
+    }
+
 	@Override
 	public RestContract createContract() {
 		RestContract contract = super.createContract();
