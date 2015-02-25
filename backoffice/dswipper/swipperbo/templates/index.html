@@ -6,9 +6,31 @@
 {% block content %}
     <h1>Choose country</h1>
 
-<a class="btn btn-default" href="country/ar" role="button">Argentina</a>
 
-<a class="btn btn-default" href="country/uy" role="button">Uruguay</a>
+<form class="form-inline" role="form">
+  <div class="form-group">
+    
+<label class="radio-inline">
+  <input type="radio" name="country" id="inlineRadio1" value="ar" checked> Argentina
+</label>
+<label class="radio-inline">
+  <input type="radio" name="country" id="inlineRadio2" value="uy"> Uruguay
+</label>
+
+
+  </div>
+
+  <div class="form-group">
+    <label for="pwd">Max per page</label>
+
+<input type="number" name="points"
+   min="10" max="500" step="10" value="100">
+
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+
 
 {% endblock %}
 
