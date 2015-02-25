@@ -8,23 +8,60 @@ import json
 
 
 def home(request):
+
+    def pagination(record_nmbr, bin_size):
+        bins = record_nmbr / bin_size
+        bin_resto = record_nmbr // bin_size
+        bins_lst = []
+        nlist = []
+        for x in range(bins):
+            nlist.append(x*bin_size)
+
+        first = True
+        for x in nlist[1:]:
+            if first:
+                bins_lst.append((0,x))
+                first = False
+                ant = x
+            else:
+                bins_lst.append((ant+1,x))
+                ant = x
+        return bins_lst
+    
+    countryd = {'ar':'Argentina', 'uy':'Uruguay'}
+    
     if request.GET:
         cc = request.GET['country']
-        size = request.GET['points']
-        print size
-        countryd = {'ar':'Argentina', 'uy':'Uruguay'}
         country = countryd.get(cc,'Argentina')
+
+
+        if 'from' in request.GET:
+            from_ = int(request.GET['from'])
+            to_ = int(request.GET['to'])
+            bin_size = to_-from_
+            requrl = settings.API_BASE_URL + 'places?filter={"where":{"Country":"%s"},"skip":%s,"limit":%s}'%(country, from_, bin_size)
+            response = urllib2.urlopen(requrl)
+            json_res = json.loads(response.read())
+        else:
+            bin_size = int(request.GET['points'])
+            
+            requrl = settings.API_BASE_URL + 'places?filter={"where":{"Country":"%s"},"limit":%s}'%(country, bin_size)
+            response = urllib2.urlopen(requrl)
+            json_res = json.loads(response.read())
 
         requrl = settings.API_BASE_URL + 'places/count/'
         response = urllib2.urlopen(requrl)
-        places_nmbr = json.loads(response.read())['count']
-        requrl = settings.API_BASE_URL + 'places?filter={"where":{"Country":"%s"},"limit":%s}'%(country, size)
+        record_nmbr = json.loads(response.read())['count']
 
-        response = urllib2.urlopen(requrl)
-        json_res = json.loads(response.read())
 
-        context = {'data':json_res, 'country':country, 'size':size}
+        bins_lst = pagination(record_nmbr, bin_size)
+        bins = len(bins_lst)
 
+
+        context = {'data':json_res, 'country':country, 'bin_size':bin_size,
+                   'bins':bins, 'bins_lst':bins_lst, 'cc':cc,}
+
+ 
 
         return render(request, "country.html", context)
 
