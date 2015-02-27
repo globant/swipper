@@ -53,27 +53,28 @@
 <nav>
   <ul class="pagination">
     <li>
-      <a href="?country={{cc}}&amp;from={{prev_from}}&amp;to={{prev_to}}" aria-label="Previous">
+      <a href="?country={{cc}}&amp;from={{prev_from}}&amp;to={{prev_to}}&amp;record_nmbr={{record_nmbr}}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
 
+
+    {% comment %} TD: Color current position {% endcomment %}
+
     {% for item in bins_lst %}
-        <li><a href="?country={{cc}}&amp;from={{item.0}}&amp;to={{item.1}}">{{forloop.counter}}</a></li>
+        <li><a href="?country={{cc}}&amp;from={{item.0}}&amp;to={{item.1}}&amp;record_nmbr={{record_nmbr}}">{{forloop.counter}}</a></li>
     {% endfor %}
 
 
 
 
     <li>
-      <a href="?country={{cc}}&amp;from={{next_from}}&amp;to={{next_to}}" aria-label="Next">
+      <a href="?country={{cc}}&amp;from={{next_from}}&amp;to={{next_to}}&amp;record_nmbr={{record_nmbr}}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>
   </ul>
 </nav>
-
-
 
 </div>
 
@@ -94,7 +95,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-danger">Delete</button>
+        <button type="button" id='delButton' class="btn btn-danger">Delete</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -112,11 +113,17 @@ $(document).on("click", ".remove", function () {
      $(".modal-body #bookId").html( dataName + ' with id ' + dataId);
 });
 
+$(document).on("click", "#delButton", function () {
+
+alert("remove");
+
+}
 
 $('#DeleteModal').on('hide.bs.modal', function (e) {
   var datalineId = $(this).data('lineid');
   $('#' + datalineId).attr('bgcolor','#ffffff');
 })
+
 
 </script>
 

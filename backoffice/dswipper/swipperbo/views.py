@@ -42,38 +42,41 @@ def home(request):
             requrl = settings.API_BASE_URL + 'places?filter={"where":{"Country":"%s"},"skip":%s,"limit":%s}'%(country, from_, bin_size)
             response = urllib2.urlopen(requrl)
             json_res = json.loads(response.read())
+            prev_from = from_ - bin_size
+            prev_to = from_ - 1
+            next_from = to_ + 1
+            next_to = to_ + bin_size
+            record_nmbr = int(request.GET['record_nmbr'])
         else:
             bin_size = int(request.GET['points'])
-            
+            requrl = settings.API_BASE_URL + 'places/count/'
+            response = urllib2.urlopen(requrl)
+            record_nmbr = json.loads(response.read())['count'] 
             requrl = settings.API_BASE_URL + 'places?filter={"where":{"Country":"%s"},"limit":%s}'%(country, bin_size)
             response = urllib2.urlopen(requrl)
             json_res = json.loads(response.read())
+            prev_from = 0
+            prev_to = 0
+            next_from = bin_size + 1
+            next_to = record_nmbr
 
-        requrl = settings.API_BASE_URL + 'places/count/'
-        response = urllib2.urlopen(requrl)
-        record_nmbr = json.loads(response.read())['count']
+
+
 
 
         bins_lst = pagination(record_nmbr, bin_size)
         bins = len(bins_lst)
         # get next and previous
         # previous
-        try:
-            prev_from = from_ - bin_size
-            prev_to = from_ - 1
-            next_from = to_ + 1
-            next_to = to_ + bin_size
-        except:
-            pass
-            # Remove this
-
 
         context = {'data':json_res, 'country':country, 'bin_size':bin_size,
                    'bins':bins, 'bins_lst':bins_lst, 'cc':cc,
                    'prev_from': prev_from, 
                    'prev_to': prev_to,
                    'next_from':next_from,
-                   'next_to':next_to,}
+                   'next_to':next_to,
+                   'record_nmbr':record_nmbr,
+                   }
 
  
 
