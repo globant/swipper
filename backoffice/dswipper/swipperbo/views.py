@@ -38,7 +38,7 @@ def home(request):
         if 'from' in request.GET:
             from_ = int(request.GET['from'])
             to_ = int(request.GET['to'])
-            bin_size = to_-from_
+            bin_size = (to_-from_)+1
             requrl = settings.API_BASE_URL + 'places?filter={"where":{"Country":"%s"},"skip":%s,"limit":%s}'%(country, from_, bin_size)
             response = urllib2.urlopen(requrl)
             json_res = json.loads(response.read())
@@ -56,10 +56,24 @@ def home(request):
 
         bins_lst = pagination(record_nmbr, bin_size)
         bins = len(bins_lst)
+        # get next and previous
+        # previous
+        try:
+            prev_from = from_ - bin_size
+            prev_to = from_ - 1
+            next_from = to_ + 1
+            next_to = to_ + bin_size
+        except:
+            pass
+            # Remove this
 
 
         context = {'data':json_res, 'country':country, 'bin_size':bin_size,
-                   'bins':bins, 'bins_lst':bins_lst, 'cc':cc,}
+                   'bins':bins, 'bins_lst':bins_lst, 'cc':cc,
+                   'prev_from': prev_from, 
+                   'prev_to': prev_to,
+                   'next_from':next_from,
+                   'next_to':next_to,}
 
  
 
