@@ -7,6 +7,11 @@ import json
 # Create your views here.
 
 
+def delete(request):
+    if request.POST:
+        return {"result":"OK"}
+
+
 def home(request):
 
     def pagination(record_nmbr, bin_size):

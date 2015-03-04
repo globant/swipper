@@ -66,8 +66,6 @@
     {% endfor %}
 
 
-
-
     <li>
       <a href="?country={{cc}}&amp;from={{next_from}}&amp;to={{next_to}}&amp;record_nmbr={{record_nmbr}}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
@@ -77,9 +75,6 @@
 </nav>
 
 </div>
-
-
-
 
 
 <div class="modal fade" id="DeleteModal">
@@ -106,24 +101,29 @@ $(document).on("click", ".remove", function () {
      var dataName = $(this).data('name');
      var dataId = $(this).data('id');
      var datalineId = $(this).data('lineid');
-     $('#DeleteModal').data('lineid', datalineId);     
-     console.log(dataName);
-     console.log(dataId);
+     $('#DeleteModal').data('id', dataId);     
      $('#' + datalineId).attr('bgcolor','#FF0000');     
      $(".modal-body #bookId").html( dataName + ' with id ' + dataId);
 });
 
 $(document).on("click", "#delButton", function () {
 
-alert("remove");
+var dataId = $('#DeleteModal').data('id');
+//console.log($('#DeleteModal').data('id'));
+$.ajax({url: "delete/" + dataId + '/', type: 'POST', dataType: 'json',
+        success: function(result){
+//        $("#div1").html(result);
+          console.log('ok');
+    }});
 
-}
+});
 
+
+// color en selected row
 $('#DeleteModal').on('hide.bs.modal', function (e) {
   var datalineId = $(this).data('lineid');
   $('#' + datalineId).attr('bgcolor','#ffffff');
 })
-
 
 </script>
 
