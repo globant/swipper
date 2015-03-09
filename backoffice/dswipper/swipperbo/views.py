@@ -14,7 +14,7 @@ def delete(request):
 
 def home(request):
 
-    def pagination(record_nmbr, bin_size):
+    def _pagination(record_nmbr, bin_size):
         bins = record_nmbr / bin_size
         bin_resto = record_nmbr // bin_size
         bins_lst = []
@@ -67,9 +67,7 @@ def home(request):
 
 
 
-
-
-        bins_lst = pagination(record_nmbr, bin_size)
+        bins_lst = _pagination(record_nmbr, bin_size)
         bins = len(bins_lst)
         # get next and previous
         # previous
@@ -94,11 +92,8 @@ def home(request):
 
 def country(request,cc):
 
-
-
     # for pagination
     # Get ammount of records
-
 
     requrl = settings.API_BASE_URL + 'places?filter={"where":{"Country":"%s"},"limit":50}'%country
 
