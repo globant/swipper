@@ -4,10 +4,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 
 
-#from django.template import RequestContext
-#from django.shortcuts import render_to_response
-
-
 import urllib2
 import json
 
@@ -16,8 +12,12 @@ import json
 
 def delete(request):
     if request.method == "POST":
-        #print request.POST
-        #print request.POST['Name']
+        json_data = json.loads(request.body)
+        try:
+            data = json_data['x']
+        except KeyError:
+            HttpResponseServerError("Malformed data!")
+
 
         return JsonResponse({'result':'OK'})
 
