@@ -1,6 +1,12 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
+
+
+#from django.template import RequestContext
+#from django.shortcuts import render_to_response
+
 
 import urllib2
 import json
@@ -9,8 +15,11 @@ import json
 
 
 def delete(request):
-    if request.POST:
-        return {"result":"OK"}
+    if request.method == "POST":
+        #print request.POST
+        #print request.POST['Name']
+
+        return JsonResponse({'result':'OK'})
 
 
 def home(request):

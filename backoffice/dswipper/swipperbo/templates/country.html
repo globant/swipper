@@ -113,13 +113,41 @@ $(document).on("click", "#delButton", function () {
 var csrftoken = $.cookie('csrftoken');
 console.log(csrftoken);
 
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+
+
 var dataId = $('#DeleteModal').data('id');
 //console.log($('#DeleteModal').data('id'));
-$.ajax({url: "delete/" + dataId + '/', type: 'POST', dataType: 'json',
-        success: function(result){
+$.ajax({
+
+
+
+  url: "delete/" + dataId + '/', 
+  type: 'POST', 
+  dataType: 'json',
+  contentType: "application/json;charset=utf-8",
+  //data: JSON.stringify({ Name: 'Test' }),
+  data: { 'Name': 'Test' },
+
+
+  success: function(result){
 //        $("#div1").html(result);
-          console.log('ok');
-    }});
+  console.log('ok');
+    }
+
+  });
 
 });
 
