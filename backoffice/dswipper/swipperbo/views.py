@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.conf import settings
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 import urllib2
 import json
@@ -89,7 +90,7 @@ def home(request):
     else:
         return render(request,"index.html")
 
-
+@ensure_csrf_cookie
 def country(request,cc):
 
     # for pagination

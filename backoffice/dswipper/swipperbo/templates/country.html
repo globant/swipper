@@ -5,6 +5,7 @@
 
 {% block content %}
 
+
 <div class="row">
   <div class="col-md-1"></div>
   <div class="col-md-11">
@@ -97,6 +98,7 @@
 </div><!-- /.modal -->
 
 <script>
+console.log('init');
 $(document).on("click", ".remove", function () {
      var dataName = $(this).data('name');
      var dataId = $(this).data('id');
@@ -107,6 +109,9 @@ $(document).on("click", ".remove", function () {
 });
 
 $(document).on("click", "#delButton", function () {
+
+var csrftoken = $.cookie('csrftoken');
+console.log(csrftoken);
 
 var dataId = $('#DeleteModal').data('id');
 //console.log($('#DeleteModal').data('id'));
