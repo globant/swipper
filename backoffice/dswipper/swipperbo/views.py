@@ -6,6 +6,7 @@ from django.http import JsonResponse
 
 import urllib2
 import json
+import requests
 
 # Create your views here.
 
@@ -14,12 +15,17 @@ def delete(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
         try:
-            data = json_data['x']
+            id_for_delete = json_data['deleteid']
+            #print data
+
         except KeyError:
             HttpResponseServerError("Malformed data!")
-
-
-        return JsonResponse({'result':'OK'})
+        # make request to delete data
+        r = requests.delete(settings.API_BASE_URL + 'places/%s'%id_for_delete)
+        if r.status_code == 204:
+            return JsonResponse({'result':'OK'})
+        else:
+            return JsonResponse({'result':r.status_code})
 
 
 def home(request):
@@ -55,8 +61,8 @@ def home(request):
             to_ = int(request.GET['to'])
             bin_size = (to_-from_)+1
             requrl = settings.API_BASE_URL + 'places?filter={"where":{"Country":"%s"},"skip":%s,"limit":%s}'%(country, from_, bin_size)
-            response = urllib2.urlopen(requrl)
-            json_res = json.loads(response.read())
+            response = requests.get(requrl)
+            json_res = response.json
             prev_from = from_ - bin_size
             prev_to = from_ - 1
             next_from = to_ + 1
@@ -65,11 +71,12 @@ def home(request):
         else:
             bin_size = int(request.GET['points'])
             requrl = settings.API_BASE_URL + 'places/count/'
-            response = urllib2.urlopen(requrl)
-            record_nmbr = json.loads(response.read())['count'] 
+            response = requests.get(requrl)
+            record_nmbr = response.json()['count'] 
+            
             requrl = settings.API_BASE_URL + 'places?filter={"where":{"Country":"%s"},"limit":%s}'%(country, bin_size)
-            response = urllib2.urlopen(requrl)
-            json_res = json.loads(response.read())
+            response = requests.get(requrl)
+            json_res = response.json
             prev_from = 0
             prev_to = 0
             next_from = bin_size + 1
