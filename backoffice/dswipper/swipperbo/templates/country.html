@@ -138,14 +138,13 @@ $.ajax({
   type: 'POST', 
   dataType: 'json',
   contentType: "application/json;charset=utf-8",
-  //data: JSON.stringify({ Name: 'Test' }),
-  //data: { 'Name': 'Test' },
   data: JSON.stringify({ deleteid: dataId }),
 
 
   success: function(result){
 //        $("#div1").html(result);
-  console.log('ok');
+  console.log('ok: ' + result);
+  window.location.reload();
     }
 
   });

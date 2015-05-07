@@ -4,7 +4,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 
 
-import urllib2
 import json
 import requests
 
@@ -17,7 +16,6 @@ def delete(request):
         try:
             id_for_delete = json_data['deleteid']
             #print data
-
         except KeyError:
             HttpResponseServerError("Malformed data!")
         # make request to delete data
@@ -26,6 +24,51 @@ def delete(request):
             return JsonResponse({'result':'OK'})
         else:
             return JsonResponse({'result':r.status_code})
+
+def update(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        print json_data
+    try:
+        id_ = json_data['deleteid']
+        name = json_data['Name']
+        address = json_data['Address']
+        phone = json_data['Phone']
+        location = json_data['Location']
+        category = json_data['Category']
+        city = json_data['City']
+    except KeyError:
+        HttpResponseServerError("Malformed data!")
+    
+    # just for test
+    json_data['Phone'] = '3333333333'
+    r = requests.post(settings.API_BASE_URL + 'places/update?where={"id":"%s"}'%id_,
+        data=json_data)
+    if r.status_code == 204:
+        return JsonResponse({'result':'OK'})
+
+
+def addnew(request):
+    if request.method == "POST":
+        json_data = json.loads(request.body)
+        print json_data
+    try:
+        name = json_data['Name']
+        address = json_data['Address']
+        phone = json_data['Phone']
+        location = json_data['Location']
+        category = json_data['Category']
+        city = json_data['City']
+    except KeyError:
+        HttpResponseServerError("Malformed data!")
+    
+    # just for test
+    # Check to have only required data
+    r = requests.post(settings.API_BASE_URL + 'places/',
+                        data=json_data)
+    if r.status_code == 200:
+        return JsonResponse({'result':'OK'})
+
 
 
 def home(request):
@@ -109,14 +152,13 @@ def home(request):
 @ensure_csrf_cookie
 def country(request,cc):
 
+    # WARNING: NO USED NOW!!!
     # for pagination
     # Get ammount of records
 
     requrl = settings.API_BASE_URL + 'places?filter={"where":{"Country":"%s"},"limit":50}'%country
-
-    response = urllib2.urlopen(requrl)
-    json_res = json.loads(response.read())
-    
+    response = requests.get(requrl)
+    json_res = response.json    
     context = {'data':json_res, 'country':country}
 
 
