@@ -202,6 +202,7 @@ $(document).on("click", ".remove", function () {
      var dataName = $(this).data('name');
      var dataId = $(this).data('id');
      var datalineId = $(this).data('lineid');
+     // TEST
      $('#DeleteModal').data('id', dataId);     
      $('#' + datalineId).attr('bgcolor','#FF0000');     
      $(".modal-body #bookId").html( dataName + ' with id ' + dataId);
@@ -221,6 +222,7 @@ $(document).on("click", ".edit", function () {
      var dataCity = $(this).data('city')
      console.log(dataCity)
      //console.log(dataName + ',' + dataId + ',' + datalineId);
+     // TEST
      $('#EditModal').data('id', dataId);     
      $('#' + datalineId).attr('bgcolor','#FF0000');     
      $(".modal-body #bookId2").html( dataName + ' with id ' + dataId);
@@ -238,11 +240,49 @@ $(document).on("click", ".edit", function () {
 
      $(".modal-body #inputPhone").attr('value', dataPhone);
 
+});
 
+
+$(document).on("click", "#editsubmitButton", function () {
+
+var csrftoken = $.cookie('csrftoken');
+//console.log(csrftoken);
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+var dataId = $('#EditModal').data('id');
+// GET ALL THE DATA
+
+var name = $('#inputName').attr('value');
+var phone = $('#inputPhone').attr('value');
+
+$.ajax({
+  url: "update/" + dataId + '/', 
+  type: 'POST', 
+  dataType: 'json',
+  contentType: "application/json;charset=utf-8",
+  data: JSON.stringify({ 'name': name, 'phone': phone }),
+  success: function(result){
+//        $("#div1").html(result);
+  console.log('ok: ' + result);
+  window.location.reload();
+    }
+  });
 
 
 
 });
+// end edit button
 
 
 
