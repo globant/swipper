@@ -6,9 +6,10 @@ from django.http import JsonResponse
 
 import json
 import requests
-
+import pdb
 # Create your views here.
 
+countryd = {'ar':'Argentina', 'uy':'Uruguay'}
 
 def delete(request):
     if request.method == "POST":
@@ -28,20 +29,15 @@ def delete(request):
 def update(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
-        print json_data
-    try:
-        id_ = json_data['deleteid']
-        name = json_data['Name']
-        address = json_data['Address']
-        phone = json_data['Phone']
-        location = json_data['Location']
-        category = json_data['Category']
-        city = json_data['City']
-    except KeyError:
-        HttpResponseServerError("Malformed data!")
+        # get id from url
+        id_ = request.path.split('/')[2]
+
+    location = {}
+    location['lat'] = json_data.pop('lat')
+    location['lng'] = json_data.pop('lon')
+    json_data['Location'] = json.dumps(location)
+    json_data['Country'] = countryd[json_data.pop('Country')]
     
-    # just for test
-    json_data['Phone'] = '3333333333'
     r = requests.post(settings.API_BASE_URL + 'places/update?where={"id":"%s"}'%id_,
         data=json_data)
     if r.status_code == 204:
@@ -92,7 +88,6 @@ def home(request):
                 ant = x
         return bins_lst
     
-    countryd = {'ar':'Argentina', 'uy':'Uruguay'}
     
     if request.GET:
         cc = request.GET['country']
