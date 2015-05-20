@@ -195,7 +195,6 @@
 
 
 <script>
-console.log('init');
 $(document).on("click", ".remove", function () {
   console.log('remove');
      var dataName = $(this).data('name');
@@ -220,7 +219,6 @@ $(document).on("click", ".edit", function () {
      var dataCity = $(this).data('city')
      var dataState = $(this).data('state')
      
-     console.log(dataCity)
      $('#EditModal').data('id', dataId);     
      $('#' + datalineId).attr('bgcolor','#FF0000');     
      $(".modal-body #bookId2").html( dataName + ' with id ' + dataId);
@@ -233,9 +231,7 @@ $(document).on("click", ".edit", function () {
      $(".modal-body #inputLocationLong").attr('value', dataloclon);
      $(".modal-body #inputState").attr('value', dataState);
      
-      console.log(dataCategory);
      $(".modal-body #inputCategory option[value='" + dataCategory + "']").attr("selected","selected");
-
      $(".modal-body #inputPhone").attr('value', dataPhone);
 
 });
