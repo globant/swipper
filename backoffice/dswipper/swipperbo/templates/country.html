@@ -5,6 +5,7 @@
 
 {% block content %}
 
+<a href="/home/">Home</a>
 
 <div class="row">
   <div class="col-md-1"></div>
@@ -280,7 +281,7 @@ var urlvars = [], hash;
 }
 
 $.ajax({
-  url: "update/" + dataId + '/', 
+  url: "/home/update/" + dataId + '/', 
   type: 'POST', 
   dataType: 'json',
   contentType: "application/json;charset=utf-8",
@@ -310,7 +311,7 @@ $.ajax({
 
 
 $(document).on("click", "#delButton", function () {
-
+console.log('delbuton in modal pressed');
 var csrftoken = $.cookie('csrftoken');
 //console.log(csrftoken);
 
@@ -328,7 +329,7 @@ $.ajaxSetup({
 
 var dataId = $('#DeleteModal').data('id');
 $.ajax({
-  url: "delete/" + dataId + '/', 
+  url: "/home/delete/" + dataId + '/', 
   type: 'POST', 
   dataType: 'json',
   contentType: "application/json;charset=utf-8",

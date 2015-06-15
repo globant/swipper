@@ -146,7 +146,6 @@
 $(document).on("click", "#addrecordsubmitButton", function () {
 
 var csrftoken = $.cookie('csrftoken');
-//console.log(csrftoken);
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
@@ -174,7 +173,7 @@ var state = $("#inputState").val();
 var country = $("#inputCountry").val();
 
 $.ajax({
-  url: 'addnew/', 
+  url: '/home/addnew/', 
   type: 'POST', 
   dataType: 'json',
   contentType: "application/json;charset=utf-8",
@@ -189,7 +188,6 @@ $.ajax({
                           }),
   success: function(result){
 //        $("#div1").html(result);
-  console.log('ok: ' + result);
   window.location.reload();
     }
   });

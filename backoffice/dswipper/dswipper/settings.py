@@ -82,12 +82,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-print BASE_DIR
+#print BASE_DIR
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "swipperbo/static"),
 )
 
+LOGIN_REDIRECT_URL = '/home/'
 
 TEMPLATE_DIRS = (
 

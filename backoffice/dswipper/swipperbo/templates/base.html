@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Swipper CRUD</title>
 
-
-
-
     <!-- Bootstrap -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
@@ -25,6 +22,13 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="/static/js/js.cookie.js"></script>
+
+
+<div align="right">
+{% if user.is_authenticated %}
+<a href="/logout?next=/"> Logout</a>
+{% endif %}
+</div>
 
 
 {% block content %}{% endblock %}

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
-
+from django.contrib.auth.decorators import login_required
 
 import json
 import requests
@@ -11,12 +11,16 @@ import pdb
 
 countryd = {'ar':'Argentina', 'uy':'Uruguay'}
 
+def init(request):
+    return render(request,"init.html")
+
+
+@login_required(login_url='/login')
 def delete(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
         try:
             id_for_delete = json_data['deleteid']
-            #print data
         except KeyError:
             HttpResponseServerError("Malformed data!")
         # make request to delete data
@@ -26,12 +30,12 @@ def delete(request):
         else:
             return JsonResponse({'result':r.status_code})
 
+@login_required(login_url='/login')
 def update(request):
     if request.method == "POST":
         json_data = json.loads(request.body)
-        #print dir(json_data)
         # get id from url
-        id_ = request.path.split('/')[2]
+        id_ = request.path.split('/')[3]
     location = {}
     location['lat'] = json_data.pop('lat')
     location['lng'] = json_data.pop('lon')
@@ -40,24 +44,20 @@ def update(request):
     r = requests.post(settings.API_BASE_URL + 
                       'places/update?where={"id":"%s"}'%id_,
                       data=json_data)
-    ##r = requests.post('http://127.0.0.1:8080/dummy/',
-    ##                    data=json_data)
     if r.status_code == 204:
         return JsonResponse({'result':'OK'})
 
+@login_required(login_url='/login')
 def addnew(request):
     headers = {'content-type': 'application/json'}
     r = requests.post(settings.API_BASE_URL + 'places',
                         data=request.body, headers=headers)
-    ##r = requests.post('http://127.0.0.1:8080/dummy/',
-    ##                    data=data, headers=headers)    
     if r.status_code == 200:
         return JsonResponse({'result':'OK'})
     else:
         return JsonResponse({'result':r.status_code})
 
-
-
+@login_required(login_url='/login')
 def home(request):
 
     def _pagination(record_nmbr, bin_size):
